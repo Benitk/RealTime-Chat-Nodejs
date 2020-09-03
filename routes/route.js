@@ -6,6 +6,8 @@ const authControlles = require('../controls/auth');
 
 router.get('/signup', authControlles.getSignup);
 
+router.post('/signup', authControlles.postSignup);
+
 router.get('/login', authControlles.getLogin);
 
 router.get('/', authControlles.getHomepage);
