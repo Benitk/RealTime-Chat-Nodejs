@@ -1,5 +1,6 @@
 const User = require("../models/User");
 const bcrypt = require('bcrypt');
+const io = require('socket.io');
 
 
 exports.getSignup = (req, res, next) => {
@@ -36,6 +37,32 @@ exports.getLogin = (req, res, next) => {
     res.render('login');
 };
 
+exports.postLogin = async (req, res, next) => {
+    const email = req.body.email;
+    const password = req.body.password;
+
+    try{
+        const u = await User.findOne({email: email});
+        console.log(u);
+        if(u){
+            const bool = await bcrypt.compare(password, u.password);
+            if(bool){
+                return res.redirect('/chat');
+            };
+
+        }
+        console.log("email doesnt exist");
+        res.status(400).redirect('/');
+    }catch(err){
+        console.log(err);
+    }
+
+}
 exports.getHomepage = (req, res, next) => {
     res.render('homepage');
 };
+
+exports.getChat = (req, res, next) => {
+    
+    res.render('chat');
+}

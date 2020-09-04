@@ -13,6 +13,8 @@ app.set('view engine', 'ejs');
 app.set('views', 'views');
 
 app.use(bodyParser.urlencoded({ extended: false }));
+app.use(express.static(path.join(__dirname, 'public')));
+
 
 // signup, login routes
 app.use(router);
@@ -20,7 +22,13 @@ app.use(router);
 
 mongoose.connect(process.env.MONGODB_URI)
   .then(result => {
-    app.listen(3000);
+    const server = app.listen(3000);
+    const io = require('./socket').init(server);
+    io.on('connection', socket =>{
+        socket.on('send-chat-message', message => {
+            socket.broadcast.emit('chat-message', message);
+        })
+    });
   })
   .catch(err => {
     console.log(err);

@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login</title>
+    <title>chat</title>
 </head>
 <header>
     <nav >
@@ -11,7 +11,7 @@
             <li>
                 <a href="/">home</a>
             </li>
-            <li >
+            <li>
                 <a href="/login">login</a>
             </li>
             <li>
@@ -19,18 +19,16 @@
             </li>
         </ul>
     </nav>
-</header>
 <body>
-    <form action="/login" method="POST">
+    <script defer src="/socket.io/socket.io.js"></script>
+    <script defer src="js/script.js"></script>
+    <div id="message-div"></div>
+    <form id="send-container">
         <div>
-            <label for="email">E-Mail</label>
-            <input type="email" name="email" id="email">
+            <label for="message">Enter a message</label>
+            <input type="text" id="message">
         </div>
-        <div>
-            <label for="password">Password</label>
-            <input type="password" name="password" id="password">
-        </div>
-        <button type="submit">Login</button>
-    </form>    
+        <button type="submit" id="send-button">Send</button> 
+    </form>
 </body>
 </html>

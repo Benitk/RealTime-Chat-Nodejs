@@ -24,7 +24,8 @@
     "ejs": "^3.1.5",
     "express": "^4.17.1",
     "mongodb": "^3.6.1",
-    "mongoose": "^5.10.2"
+    "mongoose": "^5.10.2",
+    "socket.io": "^2.3.0"
   },
   "devDependencies": {
     "nodemon": "^2.0.4"
