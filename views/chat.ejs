@@ -4,31 +4,23 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>chat</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.4.1/semantic.min.css">
+
 </head>
 <header>
-    <nav >
-        <ul>
-            <li>
-                <a href="/">home</a>
-            </li>
-            <li>
-                <a href="/login">login</a>
-            </li>
-            <li>
-                <a  href="/signup">signup</a>
-            </li>
-        </ul>
-    </nav>
 <body>
     <script defer src="/socket.io/socket.io.js"></script>
     <script defer src="js/script.js"></script>
-    <div id="message-div"></div>
-    <form id="send-container">
-        <div>
+    <div class="ui segment">
+        <div id="message-div"></div>
+    </div>
+    <form class="ui form attached fluid segment" id="send-container">
+          <div class="field">
             <label for="message">Enter a message</label>
             <input type="text" id="message">
-        </div>
-        <button type="submit" id="send-button">Send</button> 
+          </div>
+          <button type="submit" id="send-button">Send</button> 
     </form>
+    <input id="nickname" type="hidden" name="nickname" value="<%= nickname %>">
 </body>
 </html>

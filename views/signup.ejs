@@ -3,38 +3,46 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Signup</title>
+    <title>Login</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.4.1/semantic.min.css">
+
 </head>
-<header>
-    <nav >
-        <ul>
-            <li>
-                <a href="/">home</a>
-            </li>
-            <li >
-                <a href="/login">login</a>
-            </li>
-            <li>
-                <a  href="/signup">signup</a>
-            </li>
-        </ul>
-    </nav>
-</header>
 <body>
-    <form action="/signup" method="POST">
-        <div>
-            <label for="email">E-Mail</label>
-            <input type="email" name="email" id="email">
-        </div>
-        <div>
-            <label for="password">Password</label>
-            <input type="password" name="password" id="password">
-        </div>
-        <div>
-            <label for="confirmPassword">Confirm Password</label>
-            <input type="password" name="confirmPassword" id="confirmPassword">
-        </div>
-        <button type="submit">Signup</button>
-    </form>    
+  <div class="ui attached message">
+    <div class="header">
+      Welcome to our site!
+    </div>
+    <p>Fill out the form below to sign-up for a new account</p>
+  </div>
+  <form class="ui form attached fluid segment" action="/signup" method="POST">
+    <div class="two fields">
+      <div class="field">
+        <label>E-Mail</label>
+        <input type="email" name="email">
+      </div>
+      <div class="field">
+        <label>Nickname</label>
+        <input type="text" name="nickname">
+      </div>
+    </div>
+    <div class="two fields">
+
+    <div class="field">
+      <label>Password</label>
+      <input type="password" name="password">
+    </div>
+  </div>
+  <div class="two fields">
+    <div class="field">
+      <label>Password Confirmed</label>
+      <input type="password" name="password_confirmed">
+    </div>
+    </div>
+    <button class="ui blue submit button" type="submit">Sign Up</button>
+  </form>
+  <div class="ui bottom attached warning message">
+    <i class="icon help"></i>
+    Already signed up? <a href="/">Login here</a> instead.
+  </div>
 </body>
 </html>

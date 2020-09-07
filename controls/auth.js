@@ -11,6 +11,7 @@ exports.postSignup = async (req, res, next) => {
   const email = req.body.email;
   const password = req.body.password;
   const confirmPassword = req.body.confirmPassword;
+  const nickname = req.body.nickname;
 
   try{
   const u = await User.findOne({ email: email })
@@ -24,10 +25,11 @@ exports.postSignup = async (req, res, next) => {
   const user = new User({
     email: email,
     password: encryptPass,
+    nickname: nickname
   });
   
   user.save();
-  res.redirect('/login');
+  res.redirect('/');
   }catch(err){
     console.log(err);
   }
@@ -43,13 +45,11 @@ exports.postLogin = async (req, res, next) => {
 
     try{
         const u = await User.findOne({email: email});
-        console.log(u);
         if(u){
             const bool = await bcrypt.compare(password, u.password);
             if(bool){
-                return res.redirect('/chat');
+                return res.render('chat', {nickname: u.nickname});
             };
-
         }
         console.log("email doesnt exist");
         res.status(400).redirect('/');
@@ -58,9 +58,7 @@ exports.postLogin = async (req, res, next) => {
     }
 
 }
-exports.getHomepage = (req, res, next) => {
-    res.render('homepage');
-};
+
 
 exports.getChat = (req, res, next) => {
     
