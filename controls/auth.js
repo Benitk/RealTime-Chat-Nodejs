@@ -1,31 +1,38 @@
 const User = require("../models/User");
 const bcrypt = require('bcrypt');
 const io = require('socket.io');
+const colors = require('../util/colors');
+const { validationResult } = require('express-validator/check');
+
 
 
 exports.getSignup = (req, res, next) => {
-    res.render('signup');
+    res.render('signup', {
+      errorMessage: null
+    });
 };
 
 exports.postSignup = async (req, res, next) => {
   const email = req.body.email;
   const password = req.body.password;
-  const confirmPassword = req.body.confirmPassword;
   const nickname = req.body.nickname;
+
+  const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(422).render('signup', {
+        errorMessage: errors.array()[0].msg
+      });
+    }
 
   try{
   const u = await User.findOne({ email: email })
-  // check if exist
-  if(u){
-    console.log('email already exist')
-    return res.redirect('/signup');
-  }
   const encryptPass = await bcrypt.hash(password, 12);
 
   const user = new User({
     email: email,
     password: encryptPass,
-    nickname: nickname
+    nickname: nickname,
+    color: colors.sample()
   });
   
   user.save();
@@ -36,23 +43,35 @@ exports.postSignup = async (req, res, next) => {
 };
 
 exports.getLogin = (req, res, next) => {
-    res.render('login');
+    res.render('login', {
+      errorMessage: null
+    });
 };
 
 exports.postLogin = async (req, res, next) => {
     const email = req.body.email;
     const password = req.body.password;
 
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(422).render('login', {
+        errorMessage: errors.array()[0].msg
+      });
+    }
     try{
         const u = await User.findOne({email: email});
         if(u){
             const bool = await bcrypt.compare(password, u.password);
             if(bool){
-                return res.render('chat', {nickname: u.nickname});
-            };
+                return res.render('chat', {nickname: u.nickname, color: u.color});
+            }
+            return res.status(422).render('login', {
+              errorMessage: 'Invalid password.'
+            });
         }
-        console.log("email doesnt exist");
-        res.status(400).redirect('/');
+        res.status(422).render('login', {
+          errorMessage: 'Invalid email.'
+        });
     }catch(err){
         console.log(err);
     }
@@ -62,5 +81,7 @@ exports.postLogin = async (req, res, next) => {
 
 exports.getChat = (req, res, next) => {
     
-    res.render('chat');
+    res.render('chat', {
+      errorMessage: null
+    });
 }

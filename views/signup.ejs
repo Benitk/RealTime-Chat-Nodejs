@@ -8,6 +8,13 @@
 
 </head>
 <body>
+  <% if (errorMessage) { %>
+      <div class="ui negative message">
+        <div class="header">
+          <%= errorMessage %>
+        </div>
+      </div>
+  <% } %>
   <div class="ui attached message">
     <div class="header">
       Welcome to our site!

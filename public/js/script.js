@@ -4,43 +4,55 @@ const messageContainer = document.getElementById('message-div');
 const messageForm = document.getElementById('send-container');
 const messageInput = document.getElementById('message');
 const user_nickname = document.getElementById('nickname').value;
+const user_color = document.getElementById('color').value;
 
-const appendMessage = msg => {
+
+// append message to container
+const appendMessage = obj => {
     const messageElement = document.createElement('div');
-    messageElement.className = 'ui olive message'
-    messageElement.innerText = msg;
+    messageElement.className = `ui ${obj.color} message`;
+    messageElement.innerText = obj.msg;
     messageContainer.appendChild(messageElement);
+    window.scrollTo(0, messageContainer.scrollHeight);
 };
 
 (   () => {
-        const msg = user_nickname + " is joined";
-        socket.emit('user-join', msg);
-        appendMessage("Hello " + user_nickname);
+        const obj = {
+            msg: "Hello " + user_nickname,
+            color: user_color
+        };
+        appendMessage(obj);
+        obj.msg = user_nickname + " is joined";
+        socket.emit('user-join', obj);
     }
 )();
 
-
-socket.on('chat-message', msg => {
-    appendMessage(msg);
+// on sending message
+socket.on('chat-message', obj => {
+    appendMessage(obj);
 });
 
-socket.on('notify-join', msg => {
-    appendMessage(msg);
+// on join to chat 
+socket.on('notify-join', obj => {
+    appendMessage(obj);
 });
 
-socket.on('notify-disconnect', msg => {
-    appendMessage(msg);
+// on disconnect from chat 
+
+socket.on('notify-disconnect', obj => {
+    appendMessage(obj);
 });
 
-// socket.on('disconnect', () => {
-//     socket.emit('user-disconnect', user_nickname);
-// });
-
+// listen when user send message using submit button
 messageForm.addEventListener('submit', event => {
     // prevert refreshing the page
     event.preventDefault();
     const message = messageInput.value;
-    socket.emit('send-chat-message', user_nickname +":  " + message);
+    const obj = {
+        msg: user_nickname +":  " + message,
+        color: user_color
+    };
+    socket.emit('send-chat-message', obj);
     messageInput.value = '';
     
 });

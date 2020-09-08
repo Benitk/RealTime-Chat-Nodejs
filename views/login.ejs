@@ -8,6 +8,13 @@
 
 </head>
 <body>
+    <% if (errorMessage) { %>
+        <div class="ui negative message">
+          <div class="header">
+            <%= errorMessage %>
+          </div>
+        </div>
+    <% } %>
     <form action="/login" method="POST">
     <div class="ui placeholder segment">
         <div class="ui two column very relaxed stackable grid">
