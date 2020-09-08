@@ -63,12 +63,17 @@ exports.postLogin = async (req, res, next) => {
         if(u){
             const bool = await bcrypt.compare(password, u.password);
             if(bool){
-                return res.render('chat', {nickname: u.nickname, color: u.color});
+                return res.render('chat', {
+                  nickname: u.nickname,
+                  color: u.color
+                });
+                
             }
             return res.status(422).render('login', {
               errorMessage: 'Invalid password.'
             });
         }
+        console.log("email doesnt exist");
         res.status(422).render('login', {
           errorMessage: 'Invalid email.'
         });
@@ -79,9 +84,9 @@ exports.postLogin = async (req, res, next) => {
 }
 
 
-exports.getChat = (req, res, next) => {
+// exports.getChat = (req, res, next) => {
     
-    res.render('chat', {
-      errorMessage: null
-    });
-}
+//     res.render('chat', {
+//       errorMessage: null
+//     });
+// }

@@ -60,7 +60,7 @@ router.post('/login', [
       .trim()
   ], authControlles.postLogin);
 
-router.get('/chat', authControlles.getChat);
+// router.get('/chat', authControlles.getChat);
 
 router.get('/', authControlles.getLogin);
 
