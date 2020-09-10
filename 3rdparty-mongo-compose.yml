@@ -1,0 +1,11 @@
+version: '3'
+
+services:
+    chat-app:
+        container_name: chatapp-node-mongo
+        restart: always
+        build: .
+        ports:
+            - '3000:3000'
+        environment:
+            - MONGODB_URI=${MONGODB_URI}

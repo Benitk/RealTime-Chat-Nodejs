@@ -22,7 +22,7 @@ app.use(router);
 
 mongoose.connect(process.env.MONGODB_URI)
   .then(result => {
-    const server = app.listen(3000);
+      const server = app.listen(3000);
     const io = require('./socket').init(server);
     io.on('connection', socket =>{
         socket.on('send-chat-message', obj => {

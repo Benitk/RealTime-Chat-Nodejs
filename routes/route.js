@@ -5,7 +5,7 @@ const User = require('../models/User');
 
 const router = express.Router();
 
-const authControlles = require('../controls/auth');
+const authControlles = require('../controller/auth');
 
 router.get('/signup', authControlles.getSignup);
 
