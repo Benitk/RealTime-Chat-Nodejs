@@ -1,6 +1,7 @@
 const express = require('express');
 const { body } = require('express-validator/check');
 const User = require('../models/User');
+const isAuth = require('../middleware/isAuth');
 
 
 const router = express.Router();
@@ -60,7 +61,7 @@ router.post('/login', [
       .trim()
   ], authControlles.postLogin);
 
-// router.get('/chat', authControlles.getChat);
+router.get('/video&chat', isAuth, authControlles.getVideoChat);
 
 router.get('/', authControlles.getLogin);
 

@@ -63,11 +63,9 @@ exports.postLogin = async (req, res, next) => {
         if(u){
             const bool = await bcrypt.compare(password, u.password);
             if(bool){
-                return res.render('chat', {
-                  nickname: u.nickname,
-                  color: u.color
-                });
-                
+                req.session.isLoggedIn = true;
+                req.session.user = u;
+                return res.redirect('/video&chat');
             }
             return res.status(422).render('login', {
               errorMessage: 'Invalid password.'
@@ -84,9 +82,9 @@ exports.postLogin = async (req, res, next) => {
 }
 
 
-// exports.getChat = (req, res, next) => {
-    
-//     res.render('chat', {
-//       errorMessage: null
-//     });
-// }
+exports.getVideoChat = async (req, res, next) => {
+      return res.render('chat', {
+        nickname: req.user.nickname,
+        color: req.user.color
+      });
+}

@@ -1,11 +1,16 @@
-
-const socket = io('http://localhost:3000');
+const socket = io('/');
 
 const messageContainer = document.getElementById('message-div');
 const messageForm = document.getElementById('send-container');
 const messageInput = document.getElementById('message');
 const user_nickname = document.getElementById('nickname').value;
 const user_color = document.getElementById('color').value;
+
+const myPeer = new Peer('video&chat', {
+    path: '/peerjs',
+    host: '/',
+    port: '3000'
+  })
 
 
 // append message to container
@@ -16,6 +21,7 @@ const appendMessage = obj => {
     messageContainer.appendChild(messageElement);
     window.scrollTo(0, messageContainer.scrollHeight);
 };
+
 
 (   () => {
         const obj = {
