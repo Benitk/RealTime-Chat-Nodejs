@@ -1,66 +1,208 @@
 const socket = io('/');
 
+const videoGrid = document.getElementById('video-grid')
+const messageWindow = document.getElementsByClassName('main__chat_window');
 const messageContainer = document.getElementById('message-div');
 const messageForm = document.getElementById('send-container');
 const messageInput = document.getElementById('message');
 const user_nickname = document.getElementById('nickname').value;
 const user_color = document.getElementById('color').value;
+const roomID = document.getElementById('roomID').value;
 
-const myPeer = new Peer('video&chat', {
-    path: '/peerjs',
-    host: '/',
-    port: '3000'
+
+
+const myPeer = new Peer(undefined, {
+  path: '/peerjs',
+  host: '/',
+  port: 3000
+})
+
+let myVideoStream;
+const myVideo = document.createElement('video')
+myVideo.muted = true;
+const peers = {}
+
+navigator.mediaDevices.getUserMedia = navigator.mediaDevices.getUserMedia ||
+  navigator.webkitGetUserMedia ||
+  navigator.mozGetUserMedia;
+
+navigator.mediaDevices.getUserMedia({
+  video: true,
+  audio: true
+}).then(stream => {
+  myVideoStream = stream;
+  addVideoStream(myVideo, stream)
+
+  myPeer.on('call', call => {
+    call.answer(stream)
+    const video = document.createElement('video')
+    call.on('stream', userVideoStream => {
+      addVideoStream(video, userVideoStream)
+    })
   })
-
-
-// append message to container
-const appendMessage = obj => {
-    const messageElement = document.createElement('div');
-    messageElement.className = `ui ${obj.color} message`;
-    messageElement.innerText = obj.msg;
-    messageContainer.appendChild(messageElement);
-    window.scrollTo(0, messageContainer.scrollHeight);
-};
-
-
-(   () => {
-        const obj = {
-            msg: "Hello " + user_nickname,
-            color: user_color
-        };
-        appendMessage(obj);
-        obj.msg = user_nickname + " is joined";
-        socket.emit('user-join', obj);
-    }
-)();
-
-// on sending message
-socket.on('chat-message', obj => {
+  // on join to chat 
+  socket.on('notify-join', (obj, peerID) => {
     appendMessage(obj);
-});
-
-// on join to chat 
-socket.on('notify-join', obj => {
+    connectToNewUser(peerID, stream)
+  })
+  
+  // on reciving message 
+  socket.on('chat-message', obj => {
     appendMessage(obj);
-});
+  });
 
-// on disconnect from chat 
-
-socket.on('notify-disconnect', obj => {
-    appendMessage(obj);
-});
-
-// listen when user send message using submit button
-messageForm.addEventListener('submit', event => {
+  // listen when user send message using submit button
+  messageForm.addEventListener('submit', event => {
     // prevert refreshing the page
     event.preventDefault();
     const message = messageInput.value;
     const obj = {
-        msg: user_nickname +":  " + message,
-        color: user_color
+      msg: user_nickname + ":  " + message,
+      color: user_color
     };
     socket.emit('send-chat-message', obj);
     messageInput.value = '';
-    
+
+  });
+
+})
+
+
+function connectToNewUser(peerID, stream) {
+  const call = myPeer.call(peerID, stream)
+  const video = document.createElement('video')
+  call.on('stream', userVideoStream => {
+    addVideoStream(video, userVideoStream)
+  })
+  call.on('close', () => {
+    video.remove()
+  })
+  peers[peerID] = call
+}
+
+
+
+function addVideoStream(video, stream) {
+  video.srcObject = stream
+  video.addEventListener('loadedmetadata', () => {
+    video.play()
+  })
+  videoGrid.append(video)
+}
+
+
+
+
+
+
+//****************************** */
+
+// append message to container
+const appendMessage = obj => {
+  const messageElement = document.createElement('div');
+  messageElement.className = `ui ${obj.color} message`;
+  messageElement.innerText = obj.msg;
+  messageContainer.appendChild(messageElement);
+
+  scrollToBottom()
+};
+
+const scrollToBottom = () => {
+  var d = $('.main__chat_window');
+  d.scrollTop(d.prop("scrollHeight"));
+}
+
+
+(() => {
+  const obj = {
+    msg: "Hello " + user_nickname,
+    color: user_color
+  };
+  appendMessage(obj);
+  obj.msg = user_nickname + " is joined";
+  myPeer.on('open', id => {
+    socket.emit('user-join', obj, roomID, id)
+  })
+}
+)();
+
+// (   () => {
+//         const obj = {
+//             msg: "Hello " + user_nickname,
+//             color: user_color
+//         };
+//         appendMessage(obj);
+//         obj.msg = user_nickname + " is joined";
+//         socket.emit('user-join', obj);
+//     }
+// )();
+
+// on sending message
+
+
+
+// on disconnect from chat 
+
+socket.on('notify-disconnect', (obj, peerID) => {
+  appendMessage(obj);
+  if (peers[peerID]) peers[peerID].close();
 });
 
+
+
+
+
+const muteUnmute = () => {
+  const enabled = myVideoStream.getAudioTracks()[0].enabled;
+  if (enabled) {
+    myVideoStream.getAudioTracks()[0].enabled = false;
+    setUnmuteButton();
+  } else {
+    setMuteButton();
+    myVideoStream.getAudioTracks()[0].enabled = true;
+  }
+}
+
+const playStop = () => {
+  console.log('object')
+  let enabled = myVideoStream.getVideoTracks()[0].enabled;
+  if (enabled) {
+    myVideoStream.getVideoTracks()[0].enabled = false;
+    setPlayVideo()
+  } else {
+    setStopVideo()
+    myVideoStream.getVideoTracks()[0].enabled = true;
+  }
+}
+
+const setMuteButton = () => {
+  const html = `
+      <i class="fas fa-microphone"></i>
+      <span>Mute</span>
+    `
+  document.querySelector('.main__mute_button').innerHTML = html;
+}
+
+const setUnmuteButton = () => {
+  const html = `
+      <i class="unmute fas fa-microphone-slash"></i>
+      <span>Unmute</span>
+    `
+  document.querySelector('.main__mute_button').innerHTML = html;
+}
+
+const setStopVideo = () => {
+  const html = `
+      <i class="fas fa-video"></i>
+      <span>Stop Video</span>
+    `
+  document.querySelector('.main__video_button').innerHTML = html;
+}
+
+const setPlayVideo = () => {
+  const html = `
+    <i class="stop fas fa-video-slash"></i>
+      <span>Play Video</span>
+    `
+  document.querySelector('.main__video_button').innerHTML = html;
+}

@@ -1,19 +1,21 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.4.1/semantic.min.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.4.1/semantic.min.css">
 
 </head>
+
 <body>
   <% if (errorMessage) { %>
-      <div class="ui negative message">
-        <div class="header">
-          <%= errorMessage %>
-        </div>
-      </div>
+  <div class="ui negative message">
+    <div class="header">
+      <%= errorMessage %>
+    </div>
+  </div>
   <% } %>
   <div class="ui attached message">
     <div class="header">
@@ -34,16 +36,16 @@
     </div>
     <div class="two fields">
 
-    <div class="field">
-      <label>Password</label>
-      <input type="password" name="password">
+      <div class="field">
+        <label>Password</label>
+        <input type="password" name="password">
+      </div>
     </div>
-  </div>
-  <div class="two fields">
-    <div class="field">
-      <label>Password Confirmed</label>
-      <input type="password" name="password_confirmed">
-    </div>
+    <div class="two fields">
+      <div class="field">
+        <label>Password Confirmed</label>
+        <input type="password" name="password_confirmed">
+      </div>
     </div>
     <button class="ui blue submit button" type="submit">Sign Up</button>
     <input type="hidden" name="_csrf" value="<%= csrfToken %>">
@@ -53,4 +55,5 @@
     Already signed up? <a href="/">Login here</a> instead.
   </div>
 </body>
+
 </html>

@@ -1,3 +1,8 @@
+
+.controlOverlay.stackItem{
+    background-color: blue;
+}
+
 .main {
     height: 100vh;
     display: flex;
@@ -15,7 +20,7 @@
 
 .main__videos {
     flex-grow: 1;
-    background-color: black;
+    background-color: #F0F6F7FF;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -23,16 +28,16 @@
 }
 
 .main__controls {
-    background-color: #1C1E20;
+    background-color: #669DB3FF;
 }
 
 .main__right {
-    background-color: #242324;
-    border-left: 1px solid #3D3D42;
+    background-color:#A89C94FF ;
+    border-left: 1px solid #A89C94FF;
 }
 
 .main__controls {
-    color: #D2D2D2;
+    color: white;
     display: flex;
     justify-content: space-between;
     padding: 5px;
@@ -94,16 +99,17 @@
     color: #F5F5F5;
 }
 
-.leave_meeting {
-    color: #EB534B;
+.leave_meeting a {
+    font-weight: bold;
+    color: white;
 }
 
 .unmute, .stop {
     color: #CC3B33;
 }
 
-<style>
 #video-grid{
+   background-color: transparent;
    display: flex;
    justify-content: center;
    flex-wrap: wrap;

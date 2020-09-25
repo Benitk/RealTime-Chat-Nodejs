@@ -5,6 +5,7 @@ const session = require('express-session');
 const MongoDBStore = require('connect-mongodb-session')(session);
 const csrf = require('csurf');
 const { ExpressPeerServer } = require('peer');
+// const cors = require('cors')
 require('dotenv').config();
 
 const path = require('path');
@@ -31,7 +32,7 @@ app.set('views', 'views');
 
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, 'public')));
-app.use('/peerjs', peerServer);
+
 app.use(
   session({
     secret: 'session secret',
@@ -41,6 +42,8 @@ app.use(
   })
 );
 app.use(csrfProtection);
+app.use('/peerjs', peerServer);
+
 
 
 app.use((req, res, next) => {
@@ -60,33 +63,34 @@ app.use((req, res, next) => {
   next();
 });
 
-// signup, login chat routes
 app.use(appRoutes);
-
-
 
 mongoose.connect(process.env.MONGODB_URI)
   .then(result => {
-      server.listen(3000);
-      const io = require('./socket').init(server);
-      io.on('connection', socket =>{
+    server.listen(process.env.PORT || 3000);
+    const io = require('./socket').init(server);
+    io.on('connection', socket => {
+
+      socket.on('user-join', (obj, roomID, peerID) => {
+        socket.color = obj.color;
+        socket.nickname = obj.msg.split(' ')[0];
+        socket.join(roomID);
+        socket.to(roomID).broadcast.emit('notify-join', obj, peerID);
+
         socket.on('send-chat-message', obj => {
-            io.emit('chat-message', obj);
-        });
-        socket.on('user-join', obj => {
-            socket.color = obj.color;
-            socket.nickname = obj.msg.split(' ')[0];
-            socket.broadcast.emit('notify-join', obj);
-        });
+          io.to(roomID).emit('chat-message', obj);
+        })
+
         socket.on('disconnect', () => {
-          if(socket.nickname !== undefined){
+          if (socket.nickname !== undefined) {
             const obj = {
               msg: socket.nickname + " is disconnected",
               color: socket.color
-          };
-            socket.broadcast.emit('notify-disconnect', obj);
+            };
+            socket.to(roomID).broadcast.emit('notify-disconnect', obj, peerID);
           }
         });
+      });
     });
   })
   .catch(err => {
