@@ -10,6 +10,8 @@ const authControlles = require('../controller/auth');
 
 router.get('/signup', authControlles.getSignup);
 
+
+// validate user input with express-validator
 router.post('/signup', [
   body('email')
     .isEmail()
@@ -49,6 +51,8 @@ router.post('/signup', [
     .trim()
     .isAlpha()
 ], authControlles.postSignup);
+
+// validate user input with express-validator
 
 router.post('/login', [
   body('email')

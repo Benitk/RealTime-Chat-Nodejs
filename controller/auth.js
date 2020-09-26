@@ -14,6 +14,10 @@ exports.getSignup = (req, res, next) => {
   });
 };
 
+ // getting user input from signup form
+ // then creating new user and storing it in mongodb
+ //after encrypting the password using bcrypt
+
 exports.postSignup = async (req, res, next) => {
   const email = req.body.email;
   const password = req.body.password;
@@ -27,7 +31,6 @@ exports.postSignup = async (req, res, next) => {
   }
 
   try {
-    const u = await User.findOne({ email: email })
     const encryptPass = await bcrypt.hash(password, 12);
 
     const user = new User({
@@ -49,6 +52,13 @@ exports.getLogin = (req, res, next) => {
     errorMessage: null
   });
 };
+
+
+ // getting user input from login form
+ // then validate user by fetching it from mongodb
+ // and decrypting the password using bcrypt
+ // if user exist redirect to the videochat lobby create room id by uuid
+ // and sharing the user info by the session 
 
 exports.postLogin = async (req, res, next) => {
   const email = req.body.email;

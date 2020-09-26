@@ -5,7 +5,6 @@ const session = require('express-session');
 const MongoDBStore = require('connect-mongodb-session')(session);
 const csrf = require('csurf');
 const { ExpressPeerServer } = require('peer');
-// const cors = require('cors')
 require('dotenv').config();
 
 const path = require('path');
@@ -15,23 +14,26 @@ const User = require('./models/User');
 
 const app = express();
 const server = require('http').Server(app);
-
 const peerServer = ExpressPeerServer(server, {
   debug: true
 });
+
 
 const store = new MongoDBStore({
   uri: process.env.MONGODB_URI,
   collection: 'sessions'
 });
-const csrfProtection = csrf();
 
+const csrfProtection = csrf();
 
 app.set('view engine', 'ejs');
 app.set('views', 'views');
 
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, 'public')));
+
+
+// create session and store in mongodb 
 
 app.use(
   session({
@@ -41,10 +43,18 @@ app.use(
     store: store
   })
 );
+
+
 app.use(csrfProtection);
+
+// set peer server on localhost:PORT/peerjs
+
 app.use('/peerjs', peerServer);
 
 
+
+// if user logged in share information between requests
+// using session to identify user
 
 app.use((req, res, next) => {
   if (!req.session.user) {
@@ -58,12 +68,18 @@ app.use((req, res, next) => {
     .catch(err => console.log(err));
 });
 
+
 app.use((req, res, next) => {
   res.locals.csrfToken = req.csrfToken();
   next();
 });
 
 app.use(appRoutes);
+
+
+// make a connection to mongodb through moongose
+// init our server to listen to given port or for defualt 3000
+// using websockets (socket.io) to send realtime messages between clients
 
 mongoose.connect(process.env.MONGODB_URI)
   .then(result => {
