@@ -17,7 +17,7 @@
 clone this repo into local folder.
 
 **With Docker**
-* create .env file and write ``` MONGODB_CONTAINER_URI=mongodb://mongo:27017/shop ```
+* create .env file and write ``` MONGODB_CONTAINER_URI=mongodb://mongo:27017/chat-users ```
 * open terminal in repo folder and write ``` docker-compose build ```  ``` docker-compose up ```
 
 **With 3rd party mongodb service**
