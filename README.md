@@ -29,7 +29,7 @@ now open your browser at localhost:3000
 ## Website Flow
 After login into the website you will enter your lobby room, each user genereate unique room.
 
-you can see it on the url after video&chat/yourRoomID, check the example pic below.
+you can see it on the url after **video&chat/yourRoomID**, check the example pic below.
 
 send the roomID to your other peer and have fun.
 
